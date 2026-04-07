@@ -6,7 +6,7 @@
 
 > 用于 [仙芙CIMF](https://github.com/edouardlicn123/cimf) 系统的国内客户信息管理模块。
 
-本模块是 [cimf](https://github.com/anomalyco/cimf) 主项目的插件式模块之一，位于主项目的 `modules/customer_cn/` 目录。与海外客户模块（`customer_ab`）配合使用，实现国内外客户信息的分类管理。
+本模块是cimf的插件式模块之一，位于主项目的 `modules/customer_cn/` 目录。与海外客户模块（`customer_ab`）配合使用，实现国内外客户信息的分类管理。
 
 ## 目录
 
