@@ -66,7 +66,7 @@ class CustomerCnService:
     @staticmethod
     def create(user, data: Dict[str, Any]) -> CustomerCnFields:
         """创建国内客户"""
-        node = NodeService.create('customer_cn', user, {})
+        node = NodeService.create_node('customer_cn', {}, user)
         if not node:
             raise ValueError('创建节点失败')
         
@@ -109,7 +109,7 @@ class CustomerCnService:
         
         if not customer.node_id:
             raise ValueError('客户关联节点不存在')
-        NodeService.update(customer.node_id, user, {})
+        NodeService.update_node(customer.node_id, {})
         
         for key, value in data.items():
             if hasattr(customer, key) and key != 'id' and key != 'node':
@@ -126,7 +126,7 @@ class CustomerCnService:
         if customer:
             node_id = customer.node_id
             customer.delete()
-            NodeService.delete(node_id)
+            NodeService.delete_node(node_id)
             return True
         return False
     
