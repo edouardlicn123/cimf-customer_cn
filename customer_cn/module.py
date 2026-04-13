@@ -18,7 +18,7 @@ MODULE_INFO = {
     'id': 'customer_cn',
     'name': '客户信息（国内）',
     'type': 'node',
-    'version': '1.1.1',
+    'version': '1.1.7',
     'author': 'edouardlicn',
     'description': '国内客户信息管理模块',
     'models': ['CustomerCnFields'],
