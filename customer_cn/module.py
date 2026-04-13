@@ -52,6 +52,13 @@ MODULE_INFO = {
         {'name': 'notes', 'label': '备注', 'type': 'string'},
     ],
     'dashboard_stats': True,
+    'dashboard_cards': [
+        {
+            'id': 'customer_cn_card',
+            'name': '国内客户卡片',
+            'template': 'customer_cn/dashboard_card.html',
+        }
+    ],
     'views': {
         'list': 'customer_list',
         'create': 'customer_create',
