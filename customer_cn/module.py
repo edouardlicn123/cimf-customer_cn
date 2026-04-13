@@ -57,6 +57,8 @@ MODULE_INFO = {
             'id': 'customer_cn_card',
             'name': '国内客户卡片',
             'template': 'customer_cn/dashboard_card.html',
+            'color_start': '#ffa348',
+            'color_end': '#ffa348',
         }
     ],
     'views': {
