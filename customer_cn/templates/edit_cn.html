@@ -8,11 +8,9 @@
 {% endblock %}
 
 {% block admin_content %}
-<script src="{{ static('js/region_select.js') }}"></script>
 <form method="post" novalidate>
     {{ csrf_token }}
     
-    <!-- 基本信息 -->
     <div class="card mb-4">
         <div class="card-header">
             <h5 class="mb-0">基本信息</h5>
@@ -48,7 +46,6 @@
         </div>
     </div>
     
-    <!-- 联系信息 -->
     <div class="card mb-4">
         <div class="card-header">
             <h5 class="mb-0">联系信息</h5>
@@ -77,7 +74,6 @@
         </div>
     </div>
     
-    <!-- 地址信息（国内版） -->
     <div class="card mb-4">
         <div class="card-header">
             <h5 class="mb-0">地址信息</h5>
@@ -104,7 +100,7 @@
                                 </select>
                             </div>
                         </div>
-                        <input type="hidden" name="region" id="id_region" value='{{ customer.region|default({})|tojson|e }}'>
+                        <input type="hidden" name="region" id="id-region" value="{{ customer.region|default('') }}">
                     </div>
                 </div>
             </div>
@@ -121,7 +117,6 @@
         </div>
     </div>
     
-    <!-- 社交信息 -->
     <div class="card mb-4">
         <div class="card-header">
             <h5 class="mb-0">社交信息</h5>
@@ -140,7 +135,6 @@
         </div>
     </div>
     
-    <!-- 企业信息 -->
     <div class="card mb-4">
         <div class="card-header">
             <h5 class="mb-0">企业信息（可选）</h5>
@@ -148,7 +142,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <label class="form-label">所属行业</label>
+                    <label class="form-label">所在行业</label>
                     <input type="text" name="industry" class="form-control" value="{{ customer.industry|default('') if customer else '' }}">
                 </div>
                 <div class="col-md-4 mb-3">
@@ -170,7 +164,6 @@
         </div>
     </div>
     
-    <!-- 其他 -->
     <div class="card mb-4">
         <div class="card-header">
             <h5 class="mb-0">其他</h5>
@@ -204,117 +197,101 @@
         </div>
     </div>
     
-    <!-- 提交按钮 -->
-    <div class="row">
-        <div class="col-12">
-            <button type="submit" class="btn btn-primary">保存</button>
-            <a href="{{ url('modules:module_page', node_type.slug) }}" class="btn btn-secondary">取消</a>
-        </div>
+    <div class="text-end">
+        <a href="{{ url('modules:module_page', node_type.slug) }}" class="btn btn-secondary">取消</a>
+        <button type="submit" class="btn btn-primary">保存</button>
     </div>
 </form>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // 初始化省市县联动
-    const widget = document.querySelector('.region-select-widget');
-    if (widget) {
-        const provinceSelect = widget.querySelector('.region-province');
-        const citySelect = widget.querySelector('.region-city');
-        const districtSelect = widget.querySelector('.region-district');
-        const hiddenInput = widget.querySelector('input[name="region"]');
-        
-        // 解析初始值
-        let initialData = {province: '', city: '', district: ''};
-        try {
-            initialData = JSON.parse(hiddenInput.value) || initialData;
-        } catch(e) {}
-        
-        // 加载省份
-        fetch(provinceSelect.dataset.api)
-            .then(r => r.json())
-            .then(json => {
-                if (json && json.data) {
-                    provinceSelect.innerHTML = '<option value="">请选择省份</option>';
-                    json.data.forEach(p => {
-                        const opt = document.createElement('option');
-                        opt.value = p.code;
-                        opt.textContent = p.name;
-                        if (p.code === initialData.province) {
-                            opt.selected = true;
-                        }
-                        provinceSelect.appendChild(opt);
-                    });
-                    
-                    if (initialData.province) {
-                        loadCities(initialData.province, citySelect, districtSelect, initialData.city, initialData.district);
-                    }
-                }
-            });
-        
-        // 省份变更
-        provinceSelect.addEventListener('change', function() {
-            const provinceCode = this.value;
-            citySelect.innerHTML = '<option value="">请先选择省份</option>';
-            districtSelect.innerHTML = '<option value="">请先选择城市</option>';
-            citySelect.disabled = !provinceCode;
-            districtSelect.disabled = true;
-            updateHiddenInput(hiddenInput, provinceCode, '', '');
-            if (provinceCode) {
-                loadCities(provinceCode, citySelect, districtSelect, '', '');
-            }
-        });
-        
-        // 城市变更
-        citySelect.addEventListener('change', function() {
-            const cityCode = this.value;
-            districtSelect.innerHTML = '<option value="">请先选择城市</option>';
-            districtSelect.disabled = !cityCode;
-            updateHiddenInput(hiddenInput, provinceSelect.value, cityCode, '');
-            if (cityCode) {
-                loadDistricts(cityCode, districtSelect, '');
-            }
-        });
-        
-        // 区县变更
-        districtSelect.addEventListener('change', function() {
-            updateHiddenInput(hiddenInput, provinceSelect.value, citySelect.value, this.value);
-        });
+(function() {
+    'use strict';
+    
+    var provinceSelect = document.getElementById('region-province');
+    var citySelect = document.getElementById('region-city');
+    var districtSelect = document.getElementById('region-district');
+    var hiddenInput = document.getElementById('id-region');
+    
+    if (!provinceSelect || !citySelect || !districtSelect || !hiddenInput) {
+        return;
     }
     
-    function loadCities(provinceCode, citySelect, districtSelect, initialCity, initialDistrict) {
-        fetch(citySelect.dataset.api + '?province=' + provinceCode)
-            .then(r => r.json())
-            .then(json => {
+    // 解析初始值
+    var initialData = {};
+    try {
+        if (hiddenInput.value) {
+            initialData = JSON.parse(hiddenInput.value);
+        }
+    } catch (e) {
+        initialData = {};
+    }
+    
+    // 加载省份
+    var provinceApi = provinceSelect.getAttribute('data-api');
+    fetch(provinceApi)
+        .then(function(response) { return response.json(); })
+        .then(function(json) {
+            if (json && json.data) {
+                provinceSelect.innerHTML = '<option value="">请选择省份</option>';
+                json.data.forEach(function(p) {
+                    var opt = document.createElement('option');
+                    opt.value = p.code;
+                    opt.textContent = p.name;
+                    if (initialData.province === p.code) {
+                        opt.selected = true;
+                    }
+                    provinceSelect.appendChild(opt);
+                });
+                
+                // 如果有初始省份，加载城市
+                if (initialData.province) {
+                    loadCities(initialData.province, initialData.city, initialData.district);
+                }
+            }
+        })
+        .catch(function(err) {
+            console.error('加载省份失败:', err);
+        });
+    
+    // 加载城市
+    function loadCities(provinceCode, initialCity, initialDistrict) {
+        var cityApi = citySelect.getAttribute('data-api');
+        fetch(cityApi + '?province=' + provinceCode)
+            .then(function(response) { return response.json(); })
+            .then(function(json) {
                 if (json && json.data) {
                     citySelect.innerHTML = '<option value="">请选择城市</option>';
-                    json.data.forEach(c => {
-                        const opt = document.createElement('option');
+                    json.data.forEach(function(c) {
+                        var opt = document.createElement('option');
                         opt.value = c.code;
                         opt.textContent = c.name;
-                        if (c.code === initialCity) {
+                        if (initialCity === c.code) {
                             opt.selected = true;
                         }
                         citySelect.appendChild(opt);
                     });
                     citySelect.disabled = false;
+                    
                     if (initialCity) {
-                        loadDistricts(initialCity, districtSelect, initialDistrict);
+                        loadDistricts(initialCity, initialDistrict);
                     }
                 }
             });
     }
     
-    function loadDistricts(cityCode, districtSelect, initialDistrict) {
-        fetch(districtSelect.dataset.api + '?city=' + cityCode)
-            .then(r => r.json())
-            .then(json => {
+    // 加载区县
+    function loadDistricts(cityCode, initialDistrict) {
+        var districtApi = districtSelect.getAttribute('data-api');
+        fetch(districtApi + '?city=' + cityCode)
+            .then(function(response) { return response.json(); })
+            .then(function(json) {
                 if (json && json.data) {
                     districtSelect.innerHTML = '<option value="">请选择区县</option>';
-                    json.data.forEach(d => {
-                        const opt = document.createElement('option');
+                    json.data.forEach(function(d) {
+                        var opt = document.createElement('option');
                         opt.value = d.code;
                         opt.textContent = d.name;
-                        if (d.code === initialDistrict) {
+                        if (initialDistrict === d.code) {
                             opt.selected = true;
                         }
                         districtSelect.appendChild(opt);
@@ -324,9 +301,43 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
     
-    function updateHiddenInput(hiddenInput, province, city, district) {
-        hiddenInput.value = JSON.stringify({province: province, city: city, district: district});
-    }
-});
+    // 省份变更
+    provinceSelect.addEventListener('change', function() {
+        var provinceCode = this.value;
+        citySelect.innerHTML = '<option value="">请先选择省份</option>';
+        districtSelect.innerHTML = '<option value="">请先选择城市</option>';
+        citySelect.disabled = !provinceCode;
+        districtSelect.disabled = true;
+        
+        if (provinceCode) {
+            loadCities(provinceCode, '', '');
+        } else {
+            hiddenInput.value = '';
+        }
+    });
+    
+    // 城市变更
+    citySelect.addEventListener('change', function() {
+        var cityCode = this.value;
+        districtSelect.innerHTML = '<option value="">请先选择城市</option>';
+        districtSelect.disabled = !cityCode;
+        
+        if (cityCode) {
+            loadDistricts(cityCode, '');
+        } else {
+            hiddenInput.value = JSON.stringify({province: provinceSelect.value, city: '', district: ''});
+        }
+    });
+    
+    // 区县变更
+    districtSelect.addEventListener('change', function() {
+        hiddenInput.value = JSON.stringify({
+            province: provinceSelect.value,
+            city: citySelect.value,
+            district: this.value
+        });
+    });
+    
+})();
 </script>
 {% endblock %}

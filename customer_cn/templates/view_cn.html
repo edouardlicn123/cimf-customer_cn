@@ -14,13 +14,10 @@
 
 {% block admin_content %}
 <div class="row">
-    <!-- 基本信息 -->
     <div class="col-12 mb-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">基本信息</h5>
-            </div>
-            <div class="card-body">
+        <div class="entry-card">
+            <div class="entry-card-body">
+                <h5 class="entry-card-title">基本信息</h5>
                 <div class="row">
                     <div class="col-md-3 mb-3">
                         <label class="form-label text-muted">客户名称</label>
@@ -43,13 +40,10 @@
         </div>
     </div>
     
-    <!-- 联系信息 -->
     <div class="col-12 mb-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">联系信息</h5>
-            </div>
-            <div class="card-body">
+        <div class="entry-card">
+            <div class="entry-card-body">
+                <h5 class="entry-card-title">联系信息</h5>
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label text-muted">电话1</label>
@@ -59,8 +53,6 @@
                         <label class="form-label text-muted">邮箱1</label>
                         <p class="mb-0">{{ customer.email1|default('-') }}</p>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label text-muted">电话2</label>
                         <p class="mb-0">{{ customer.phone2|default('-') }}</p>
@@ -69,8 +61,6 @@
                         <label class="form-label text-muted">邮箱2</label>
                         <p class="mb-0">{{ customer.email2|default('-') }}</p>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label text-muted">微信号</label>
                         <p class="mb-0">{{ customer.wechat|default('-') }}</p>
@@ -84,13 +74,10 @@
         </div>
     </div>
     
-    <!-- 地址信息 -->
     <div class="col-12 mb-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">地址信息</h5>
-            </div>
-            <div class="card-body">
+        <div class="entry-card">
+            <div class="entry-card-body">
+                <h5 class="entry-card-title">地址信息</h5>
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <label class="form-label text-muted">省市区</label>
@@ -109,13 +96,10 @@
         </div>
     </div>
     
-    <!-- 企业信息 -->
     <div class="col-12 mb-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">企业信息</h5>
-            </div>
-            <div class="card-body">
+        <div class="entry-card">
+            <div class="entry-card-body">
+                <h5 class="entry-card-title">企业信息</h5>
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <label class="form-label text-muted">所属行业</label>
@@ -134,13 +118,10 @@
         </div>
     </div>
     
-    <!-- 其他 -->
     <div class="col-12 mb-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">其他</h5>
-            </div>
-            <div class="card-body">
+        <div class="entry-card">
+            <div class="entry-card-body">
+                <h5 class="entry-card-title">其他</h5>
                 <div class="row">
                     <div class="col-md-3 mb-3">
                         <label class="form-label text-muted">客户等级</label>
@@ -163,18 +144,18 @@
         </div>
     </div>
     
-    <!-- 时间信息 -->
     <div class="col-12">
-        <div class="card">
-            <div class="card-body">
+        <div class="entry-card">
+            <div class="entry-card-body">
+                <h5 class="entry-card-title">时间信息</h5>
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label text-muted">创建时间</label>
-<p class="mb-0">{{ customer.created_at.strftime('%Y-%m-%d %H:%M') if customer.created_at else '-' }}</p>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label text-muted">更新时间</label>
-                            <p class="mb-0">{{ customer.updated_at.strftime('%Y-%m-%d %H:%M') if customer.updated_at else '-' }}</p>
+                        <p class="mb-0">{{ customer.created_at|default('-') }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-muted">更新时间</label>
+                        <p class="mb-0">{{ customer.updated_at|default('-') }}</p>
                     </div>
                 </div>
             </div>

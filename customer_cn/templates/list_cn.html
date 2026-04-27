@@ -14,47 +14,45 @@
 {% endblock %}
 
 {% block admin_content %}
-<div class="card mb-4">
-    <div class="card-body">
-        <form method="get" class="row g-3">
-            <div class="col-md-4">
-                <label class="form-label small text-muted">客户名称/企业名称</label>
-                <input type="text" name="search" class="form-control" placeholder="搜索..." value="{{ search }}">
-            </div>
-            <div class="col-md-3">
-                <label class="form-label small text-muted">企业性质</label>
-                <select name="enterprise_type" class="form-select">
-                    <option value="">全部</option>
-                    {% if enterprise_types %}
-                    {% for item in enterprise_types %}
-                    <option value="{{ item.id }}" {% if filter_enterprise_type == item.id|string %}selected{% endif %}>{{ item.name }}</option>
-                    {% endfor %}
-                    {% endif %}
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label class="form-label small text-muted">客户等级</label>
-                <select name="customer_level" class="form-select">
-                    <option value="">全部</option>
-                    {% if customer_levels %}
-                    {% for item in customer_levels %}
-                    <option value="{{ item.id }}" {% if filter_customer_level == item.id|string %}selected{% endif %}>{{ item.name }}</option>
-                    {% endfor %}
-                    {% endif %}
-                </select>
-            </div>
-            <div class="col-md-2 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="bi bi-search"></i> 搜索
-                </button>
-            </div>
-        </form>
-    </div>
+<div class="mb-4">
+    <form method="get" class="row g-3">
+        <div class="col-md-4">
+            <label class="form-label small text-muted">客户名称/企业名称</label>
+            <input type="text" name="search" class="form-control" placeholder="搜索..." value="{{ search }}">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small text-muted">企业性质</label>
+            <select name="enterprise_type" class="form-select">
+                <option value="">全部</option>
+                {% if enterprise_types %}
+                {% for item in enterprise_types %}
+                <option value="{{ item.id }}" {% if filter_enterprise_type == item.id|string %}selected{% endif %}>{{ item.name }}</option>
+                {% endfor %}
+                {% endif %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small text-muted">客户等级</label>
+            <select name="customer_level" class="form-select">
+                <option value="">全部</option>
+                {% if customer_levels %}
+                {% for item in customer_levels %}
+                <option value="{{ item.id }}" {% if filter_customer_level == item.id|string %}selected{% endif %}>{{ item.name }}</option>
+                {% endfor %}
+                {% endif %}
+            </select>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="bi bi-search"></i> 搜索
+            </button>
+        </div>
+    </form>
 </div>
 
 <div class="row">
     <div class="col-12">
-        <div class="card">
+        <div class="entry-card">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
                     <thead>
