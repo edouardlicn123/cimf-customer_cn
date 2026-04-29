@@ -25,6 +25,7 @@ from django.core.paginator import Paginator
 from core.node.services import NodeTypeService, NodeService
 from modules.customer_cn.services import CustomerCnService
 from core.services import PermissionService
+from core.decorators import login_required_json
 
 
 def safe_int(value: str, default=None):
@@ -318,7 +319,7 @@ def node_delete(request, node_id: int):
     return redirect('modules:customer_cn:list')
 
 
-@login_required
+@login_required_json
 def api_stats(request):
     """获取客户统计信息"""
     from django.http import JsonResponse
